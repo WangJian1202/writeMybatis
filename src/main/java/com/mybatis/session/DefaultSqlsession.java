@@ -3,8 +3,10 @@ package com.mybatis.session;
 import com.mybatis.config.Configuration;
 import com.mybatis.executor.DefaultExecutor;
 import com.mybatis.executor.Executor;
+import com.mybatis.reflect.MapperProxy;
 import com.mybatis.statement.MappedStatement;
 
+import java.lang.reflect.Proxy;
 import java.util.List;
 
 /**
@@ -47,7 +49,8 @@ public class DefaultSqlsession implements Sqlsession {
     }
 
     public <T> T getMapper(Class<T> type) {
-        return null;
+        MapperProxy mapperProxy=new MapperProxy(this);
+        return (T) Proxy.newProxyInstance(type.getClassLoader(),new Class[]{type},mapperProxy);
     }
 
 

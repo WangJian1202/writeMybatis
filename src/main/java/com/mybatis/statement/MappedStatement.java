@@ -9,7 +9,7 @@ public class MappedStatement {
 
     private String namespace;
     private String sourceId ;
-    private String resultMap;
+    private String resultType;
     private String sql;
 
     public String getNamespace() {
@@ -29,11 +29,11 @@ public class MappedStatement {
     }
 
     public String getResultType() {
-        return resultMap;
+        return resultType;
     }
 
-    public void setResultType(String resultMap) {
-        this.resultMap = resultMap;
+    public void setResultType(String resultType) {
+        this.resultType = resultType;
     }
 
     public String getSql() {

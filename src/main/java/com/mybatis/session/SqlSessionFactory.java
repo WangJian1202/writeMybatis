@@ -66,7 +66,7 @@ public class SqlSessionFactory {
             Element element = selects.get(i);
             MappedStatement mappedStatement = new MappedStatement();
             String id = element.attribute("id").getData().toString();
-            String resultType = element.attribute("resultMap").getData().toString();
+            String resultType = element.attribute("resultType").getData().toString();
             String sql = element.getData().toString();
             String sourceId=namespace+"."+id;
             mappedStatement.setNamespace(namespace);

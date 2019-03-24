@@ -1,6 +1,7 @@
 package com.mybatis.executor;
 
 import com.mybatis.config.Configuration;
+import com.mybatis.reflect.ReflectionUtils;
 import com.mybatis.statement.MappedStatement;
 
 import java.sql.*;
@@ -29,19 +30,18 @@ public class DefaultExecutor implements Executor {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        Connection connection=null;
         try {
             //2.获取连接
-            Connection connection=DriverManager.getConnection(conf.getJdbcUrl(),conf.getJdbcUsername(),conf.getJdbcPassword());
+            connection=DriverManager.getConnection(conf.getJdbcUrl(),conf.getJdbcUsername(),conf.getJdbcPassword());
             PreparedStatement preparedStatement = connection.prepareStatement(ms.getSql());
             perameterized(preparedStatement,parameter);
             ResultSet resultSet = preparedStatement.executeQuery();
-
-
-
+            handlerResult(resultSet,result,ms.getResultType());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return result;
     }
 
 
@@ -54,11 +54,15 @@ public class DefaultExecutor implements Executor {
             e.printStackTrace();
         }
         try {
-            Object entity = clazz.newInstance();
+            while(resultSet.next()){
+                Object entity = clazz.newInstance();
+                ReflectionUtils.setProTobeanFromResult(entity,resultSet);
+                ret.add((E)entity);
+            }
 
         } catch (InstantiationException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -70,6 +74,7 @@ public class DefaultExecutor implements Executor {
             preparedStatement.setLong(1,(Long)parameter);
         }else if(parameter instanceof String){
             preparedStatement.setString(1,(String)parameter);
+            System.out.println(preparedStatement);
         }
     }
 }
